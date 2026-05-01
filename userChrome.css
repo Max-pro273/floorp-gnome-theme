@@ -2,8 +2,212 @@
 /* Import theme */
 @import "theme/gnome-theme.css";
 
-/* Import a custom stylesheet
- * Everything you add in your customChrome.css file (it doesn't exist by
- * default) will be included here and preserved between updates. 
- * You can apply your own custom styles in that file. */
-@import "customChrome.css"; /**/
+/* ========================================================================
+ * GNOME SIDEBAR PANEL INJECTION
+ * Based on: theme/parts/sidebar.css & theme/parts/buttons.css
+ * ======================================================================== */
+:root {
+  --toolbarbutton-inner-padding: 4px;
+}
+/* 1. КОНТЕЙНЕР (Container)
+   Використовуємо змінні з theme/parts/sidebar.css для монолітного вигляду.
+   Прибираємо border-top для злиття з HeaderBar. */
+#panel-sidebar-select-box {
+    background-color: var(--gnome-toolbar-background) !important;
+    margin-top: -2px !important;
+    padding: var(--gnome-toolbar-padding) 0 !important;
+    width: calc(var(--gnome-button-size) + var(--gnome-toolbar-padding) * 2) !important;
+    align-items: center !important;
+}
+#notifications-toolbar{
+  border-bottom: 1px solid var(--chrome-content-separator-color) !important;
+}
+
+#workspaces-toolbar-button > image {
+    height: 20px !important;
+}
+
+#workspaces-toolbar-button{
+    border-left-width: 0px !important;
+}
+
+#workspaces-toolbar-button > label {
+    display: none !important;
+}
+#tabbrowser-tabs{
+  border: none !important;
+}
+
+.toolbar-items{
+  padding: 0 !important;
+}
+
+#panel-sidebar-header{
+  display: none !important;
+}
+
+#profile-manager-button {
+  list-style-image: var(--gnome-icon-firefox-symbolic) !important;
+}
+
+.tab-background[selected] * {
+    background-color: var(--gnome-selected-color) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    /* Відновлюємо іконки на панелі інструментів */
+    .webextension-browser-action,
+    .unified-extensions-item-action-button {
+        list-style-image: var(--webextension-toolbar-image) !important;
+    }
+
+    /* Відновлюємо іконки у випадаючому меню розширень */
+    #unified-extensions-panel .unified-extensions-item-action-button,
+    #unified-extensions-panel .webextension-browser-action {
+        list-style-image: var(--webextension-menupanel-image) !important;
+    }
+}
+
+/* 2. КНОПКИ (Buttons)
+   Копіюємо логіку з theme/parts/buttons.css (.toolbarbutton-1).
+   Використовуємо нативні радіуси та розміри. */
+.panel-sidebar-panel,
+#panel-sidebar-bottomButtonBox > toolbarbutton {
+    appearance: none !important;
+    background-color: transparent !important;
+    border-radius: var(--gnome-button-radius) !important;
+
+    /* Розміри з theme/variables.css */
+    min-height: var(--gnome-button-size) !important;
+    min-width: var(--gnome-button-size) !important;
+    max-height: var(--gnome-button-size) !important;
+    max-width: var(--gnome-button-size) !important;
+
+    margin: 2px 0 !important; /* Відступ між іконками */
+    padding: 0 !important;
+
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    transition: background var(--gnome-animation-time) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+@media -moz-pref("userChrome.tab.dynamic_separator") {
+  @media not -moz-pref("userChrome.tab.newtab_button_like_tab") {
+    #tabbrowser-tabs:not([orient="vertical"]) .tab-stack::before, #tabbrowser-tabs:not([orient="vertical"]) #tabbrowser-arrowscrollbox:not([overflowing]) .tabbrowser-tab:not([visuallyselected], [multiselected], :hover):last-of-type .tab-stack::after {
+      content: none !important;
+    }
+  }
+}
+
+@media -moz-pref("userChrome.tab.sound_with_favicons") {
+  .tab-audio-button:not([sharing], [crashed]):is([soundplaying], [muted], [activemedia-blocked]) {
+    display: none !important;
+  }
+}
+#trust-icon-container{
+  margin: auto !important;
+}
+
+/* СТАНИ КНОПОК (Hover / Active / Checked)
+   Взято з theme/parts/buttons.css */
+
+/* Hover */
+.panel-sidebar-panel:hover,
+#panel-sidebar-bottomButtonBox > toolbarbutton:hover {
+    background-color: var(--gnome-button-hover-background) !important;
+}
+
+/* Active / Checked (Selected) */
+.panel-sidebar-panel[data-checked="true"],
+.panel-sidebar-panel:active,
+#panel-sidebar-bottomButtonBox > toolbarbutton:active,
+#panel-sidebar-bottomButtonBox > toolbarbutton[checked="true"] {
+    background-color: var(--gnome-button-active-background) !important;
+}
+
+/* 3. ІКОНКИ (Icons)
+   Нормалізація розміру та кольору.
+   Використовуємо хак-фільтри з theme/system-icons.css для правильного кольору в Dark Mode. */
+
+.panel-sidebar-panel img,
+#panel-sidebar-bottomButtonBox .toolbarbutton-icon {
+    width: 16px !important;
+    height: 16px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Застосовуємо Gnome-фільтр кольору лише до системних іконок,
+   ігноруємо фавіконки сайтів (Gemini, ChatGPT і т.д.) */
+#default-panel-history img,
+#default-panel-downloads img,
+#default-panel-notes img,
+#panel-sidebar-bottomButtonBox .toolbarbutton-icon {
+    filter: var(--gnome-window-icons-hack-filter) !important;
+    -moz-context-properties: fill, fill-opacity;
+    fill: var(--gnome-toolbar-icon-fill) !important;
+}
+
+/* 4. ЗАМІНА ІКОНОК (Icon Mapping)
+   Підставляємо змінні з theme/parts/icons.css замість дефолтних картинок Floorp.
+   Ми використовуємо `content: var(...)` для підміни зображення. */
+
+/* Історія -> preferences-system-time-symbolic (як у theme/parts/icons.css) */
+#default-panel-history img {
+    content: var(--gnome-icon-preferences-system-time-symbolic) !important;
+}
+
+/* Завантаження -> folder-download-symbolic */
+#default-panel-downloads img {
+    content: var(--gnome-icon-folder-download-symbolic) !important;
+}
+
+/* Нотатки -> edit-paste-symbolic (найближчий аналог в наборі, або text-x-generic) */
+#default-panel-notes img {
+    content: var(--gnome-icon-edit-paste-symbolic) !important;
+}
+
+/* -- Нижні кнопки -- */
+
+/* Addons -> application-x-addon-symbolic */
+#panel-sidebar-addons-icon .toolbarbutton-icon {
+    list-style-image: var(--gnome-icon-application-x-addon-symbolic) !important;
+}
+
+/* Passwords -> key-symbolic (знайдено як #password-notification-icon) */
+#panel-sidebar-passwords-icon .toolbarbutton-icon {
+    list-style-image: var(--gnome-icon-key-symbolic) !important;
+}
+
+/* Settings -> settings-symbolic */
+#panel-sidebar-preferences-icon .toolbarbutton-icon {
+    list-style-image: var(--gnome-icon-settings-symbolic) !important;
+}
+
+/* 5. ВИПРАВЛЕННЯ (Fixes) */
+
+/* Прибираємо зайві лейбли в нижній частині, якщо вони є */
+#panel-sidebar-bottomButtonBox .toolbarbutton-text {
+    display: none !important;
+}
+
+/* Розділювач (Spacer) - робимо прозорим або прибираємо */
+#panel-sidebar-select-box spacer {
+    border: none !important;
+    background: transparent !important;
+}
+
+.tab-content {
+  #tabbrowser-tabs[orient="horizontal"] & {
+    &:not([pinned])::before {
+
+    width: 20%;
+
+    }
+  }
+}
+
+

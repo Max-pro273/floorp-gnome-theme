@@ -159,7 +159,7 @@ menuitem, menupopup menu, panelview .toolbarbutton-1,
 
 	&:hover, &[_moz-menuactive], &:focus, &:focus-within {
 		&:not([disabled="true"]) {
-			background: var(--gnome-selected-color) !important;
+			background-color: var(--gnome-selected-color) !important;
 		}
 		outline: 0 !important;
 	}

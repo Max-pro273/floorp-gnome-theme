@@ -1,3 +1,23 @@
+# GNOME theme for Firefox & Floorp
+
+Custom tweaks with my preferred settings :)
+
+<img src="screenshot floorp.png"/>
+
+## What's changed:
+*   **Optimized Settings:** Shipped with my optimal configurations for both Firefox and Floorp.
+*   **Floorp & Lepton UI Fix:** Added fixes and support for Floorp's built-in Lepton UI.
+*   **It just works:** It's not 100% perfect, but it's fully functional without global issues.
+
+If anyone has ideas or fixes, pull requests are welcome!
+
+## How to install 
+Basically the same as the original, but with the Floorp directory:
+
+```sh
+./scripts/install.sh -f ~/.floorp/
+```
+
 <img src="icon.svg" alt="Firefox GNOME theme" width="128" align="left"/>
 
 # Firefox GNOME theme
